@@ -28,14 +28,15 @@ class _HomeViewScreenState extends State<HomeViewScreen> {
   void initState() {
     super.initState();
     _permissionsService.checkStoragePermission().then((_) {
-      externalDataSourceRepository.createDataSourceDirectory();
+      externalDataSourceRepository.createDataSourceDirectory().then((_) {
+        externalDataSourceRepository.readFilesFromDataSourceDirectory();
+      });
     });
   }
 
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       backgroundColor: Colors.grey[200],
         appBar: AppBar(
@@ -78,6 +79,8 @@ class _HomeViewScreenState extends State<HomeViewScreen> {
               ],
             ),
           ),
-        ));
+        ),
+
+    );
   }
 }
