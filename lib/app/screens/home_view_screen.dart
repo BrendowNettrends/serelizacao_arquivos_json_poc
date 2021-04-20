@@ -3,6 +3,7 @@ import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:serelizacao_arquivos_json_poc/app/helpers/external_data_source_repository.dart';
+import 'package:serelizacao_arquivos_json_poc/app/utils/permissions_service.dart';
 
 class HomeViewScreen extends StatefulWidget {
   HomeViewScreen({Key key}) : super(key: key);
@@ -12,6 +13,7 @@ class HomeViewScreen extends StatefulWidget {
 }
 
 class _HomeViewScreenState extends State<HomeViewScreen> {
+  PermissionsService _permissionsService = PermissionsService();
   ExternalDataSourceRepository externalDataSourceRepository = ExternalDataSourceRepository();
 
   Uint8List printImageBytes()  {
@@ -25,14 +27,14 @@ class _HomeViewScreenState extends State<HomeViewScreen> {
   @override
   void initState() {
     super.initState();
-    externalDataSourceRepository.createDataSourceDirectory();
-
+    _permissionsService.checkStoragePermission().then((_) {
+      externalDataSourceRepository.createDataSourceDirectory();
+    });
   }
+
 
   @override
   Widget build(BuildContext context) {
-
-    printImageBytes();
 
     return Scaffold(
       backgroundColor: Colors.grey[200],
