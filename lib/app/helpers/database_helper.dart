@@ -3,9 +3,9 @@ import 'dart:io';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
 
-class DatabaseRepository {
+class DatabaseHelper {
 
-  static DatabaseRepository _databaseHelper;
+  static DatabaseHelper _databaseHelper;
   static Database _database;
 
   String itemsTable = 'Items';
@@ -58,11 +58,11 @@ class DatabaseRepository {
   String colNomInstallation = 'nom_Installation';
   String colDtProject = 'dt_Project';
 
-  DatabaseRepository._createInstance();
+  DatabaseHelper._createInstance();
 
-  factory DatabaseRepository() {
+  factory DatabaseHelper() {
     if(_databaseHelper == null) {
-      _databaseHelper = DatabaseRepository._createInstance();
+      _databaseHelper = DatabaseHelper._createInstance();
     }
     return _databaseHelper;
   }
