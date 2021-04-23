@@ -17,7 +17,7 @@ class AreaModel {
   );
 
   Map<String, dynamic> toJson() {
-    Map<String, dynamic> json;
+    Map<String, dynamic> json = Map<String, dynamic>();
 
     json['id_Area'] = idArea;
     json['nom_Area'] = nomArea;
@@ -30,13 +30,38 @@ class AreaModel {
     ExternalDataSourceRepository externalDataSource = ExternalDataSourceRepository();
     Repository repository = Repository();
 
-    List<Map<String, dynamic>> areas = externalDataSource
+    List<AreaModel> areas = <AreaModel>[];
+
+        List<Map<String, dynamic>> databaseData = await repository.readData(_areaTable);
+    List<AreaModel> areasFromDatabase;
+    areasFromDatabase = databaseData
+        .map((element) => AreaModel.fromJson(element)).toList();
+
+    List<AreaModel> areasFromExternalData;
+    List<Map<String, dynamic>> externalData = await externalDataSource
         .readFilesFromDataSourceDirectory(JsonTableName.AREA_TABLE);
 
+    areasFromExternalData = externalData.map((element) => AreaModel.fromJson(element)).toList();
 
-    for (Map<String, dynamic> area in areas) {
-      await repository.insertData(_areaTable, area);
+
+    areas = areasFromExternalData.where((element) {
+      bool contains = false;
+
+      for(AreaModel area in areasFromDatabase) {
+        if (area.idArea == element.idArea) {
+          contains = true;
+          break;
+        }
+      }
+      return !contains;
+    }).toList();
+
+
+    for (AreaModel areaModel in areas) {
+      repository.insertData(_areaTable, areaModel.toJson());
     }
+
+
   }
 
   Future<void> createArea(AreaModel area) async {
